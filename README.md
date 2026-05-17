@@ -16,8 +16,15 @@ The full pipeline + visualisations are wrapped in a single Streamlit app.
 
 ```bash
 pip install -r requirements.txt
-python ui/run.py            # opens http://localhost:8501
+python run.py               # opens http://localhost:8501
+# equivalent:  python ui/run.py     ·     bash ui/run.sh
 ```
+
+`run.py` is a robust launcher that auto-installs missing deps, picks a free
+port if `8501` is busy, sets up `PYTHONPATH`, and surfaces import errors
+before Streamlit swallows them. Run `python run.py --help` for flags
+(`--port`, `--check-only`, `--no-browser`, `--no-install`,
+`--include-optional`).
 
 ## Repository layout
 

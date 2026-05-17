@@ -22,15 +22,40 @@ a self-contained probe over `SimpleCNN-{0,1,2}`:
 
 ## Quick start
 
-Three equivalent ways to launch (run from the repo root):
+Any of these work, from any working directory:
 
 ```bash
-python ui/run.py                       # one-click; auto-installs missing deps
-bash   ui/run.sh                       # equivalent shell launcher
+python run.py                          # top-level shim (recommended)
+python ui/run.py                       # the real launcher
+bash   ui/run.sh                       # shell wrapper around ui/run.py
 python -m streamlit run ui/app.py      # raw streamlit invocation
 ```
 
-The UI opens at <http://localhost:8501>.
+The UI opens at <http://localhost:8501> (auto-bumps to 8502, 8503, ... if
+busy).
+
+`ui/run.py` performs a preflight before launch:
+
+- verifies the repo files (`dataset.npz`, `trained-models/simple-cnn-{0,1,2}`,
+  every UI module) are present;
+- checks every dependency in `requirements.txt` is installed at a high enough
+  version, and offers to `pip install` what's missing;
+- imports every UI module so syntax errors surface *now*, not after Streamlit
+  hides them behind its server log;
+- picks a free port if `8501` is taken;
+- sets `PYTHONPATH` so `import attacks / utils / models / pipeline` resolves
+  consistently across platforms.
+
+Useful flags (`python run.py --help` for the full list):
+
+| flag | what it does |
+|---|---|
+| `--port N` | preferred port (auto-bump if busy) |
+| `--no-browser` | don't open the system browser |
+| `--no-install` | fail fast on missing deps instead of pip-installing |
+| `--include-optional` | also warn about missing optional deps (e.g. `umap-learn`) |
+| `--check-only` | run preflight, print results, exit |
+| `-- --server.maxUploadSize 50` | forward args to Streamlit (after `--`) |
 
 Install deps manually:
 
@@ -88,15 +113,17 @@ Open `ui/embeddings.py` and extend `default_attack_specs(...)` with a new
 ## File layout
 
 ```
-ui/
-├── app.py                    # Streamlit app (six tabs)
-├── pipeline.py               # Reusable classifier pipeline + attack wrappers
-├── viz.py                    # Plotly + image-rendering helpers
-├── embeddings.py             # NEW — feature extraction + cached per-attack bundles
-├── embedding_reducers.py     # NEW — pluggable 2D reducers (PCA / t-SNE / UMAP / ...)
-├── embedding_viz.py          # NEW — scatter, small multiples, drift heatmap
-├── requirements.txt          # streamlit, plotly, pillow
-├── run.py                    # Python launcher (press ▶ in your IDE)
-├── run.sh                    # Equivalent shell launcher
-└── README.md
+adversarial-lens/
+├── run.py                    # top-level shim that calls ui/run.py
+└── ui/
+    ├── app.py                    # Streamlit app (six tabs)
+    ├── pipeline.py               # Reusable classifier pipeline + attack wrappers
+    ├── viz.py                    # Plotly + image-rendering helpers
+    ├── embeddings.py             # NEW — feature extraction + cached per-attack bundles
+    ├── embedding_reducers.py     # NEW — pluggable 2D reducers (PCA / t-SNE / UMAP / ...)
+    ├── embedding_viz.py          # NEW — scatter, small multiples, drift heatmap
+    ├── requirements.txt          # streamlit, plotly, pillow
+    ├── run.py                    # Robust launcher (preflight, port handling, ...)
+    ├── run.sh                    # Shell wrapper around run.py
+    └── README.md
 ```
