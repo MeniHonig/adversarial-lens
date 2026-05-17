@@ -1,0 +1,13 @@
+# Core (pinned loosely so it runs on modern Python / Apple Silicon)
+numpy>=1.24
+torch>=2.0
+torchvision>=0.15
+matplotlib>=3.7
+seaborn>=0.12
+
+# Embedding pipeline + UI
+scikit-learn>=1.3
+umap-learn>=0.5
+streamlit>=1.32
+plotly>=5.18
+pillow>=9.0

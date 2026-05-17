@@ -1,0 +1,20 @@
+title: adversarial-lens
+description: An interactive playground for studying how adversarial attacks reshape a CNN's representation space.
+url: ""
+baseurl: ""
+theme: jekyll-theme-cayman
+markdown: kramdown
+kramdown:
+  syntax_highlighter: rouge
+  input: GFM
+  hard_wrap: false
+show_downloads: false
+google_analytics:
+plugins:
+  - jekyll-remote-theme
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true
+include:
+  - assets
